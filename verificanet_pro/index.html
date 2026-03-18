@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificanet | Soluciones IT Empresariales</title>
+    <link rel="stylesheet" href="css/styles-pro.css">
+</head>
+<body class="login-page">
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container-fluid">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>VERIFICANET</h1>
+                    <span class="tagline">IT Solutions</span>
+                </div>
+                <nav class="main-nav">
+                    <a href="#servicios">Servicios</a>
+                    <a href="#soluciones">Soluciones</a>
+                    <a href="#contacto">Contacto</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">Transformación Digital para su Empresa</h2>
+                <p class="hero-subtitle">Soluciones tecnológicas integrales que impulsan el crecimiento de su negocio</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h3>Área de Clientes</h3>
+                    <p>Acceda a su panel de gestión</p>
+                </div>
+
+                <div class="tabs-professional">
+                    <button class="tab-btn active" onclick="showTabPro('login')">Acceso</button>
+                    <button class="tab-btn" onclick="showTabPro('register')">Registro</button>
+                </div>
+
+                <div id="alert-pro" class="alert-pro"></div>
+
+                <!-- Login Form -->
+                <div id="login-form-pro" class="form-section-pro active">
+                    <form onsubmit="handleLogin(event)" class="professional-form">
+                        <div class="input-group">
+                            <label>Usuario</label>
+                            <input type="text" id="login-username" required placeholder="Introduzca su usuario">
+                        </div>
+                        <div class="input-group">
+                            <label>Contraseña</label>
+                            <input type="password" id="login-password" required placeholder="Introduzca su contraseña">
+                        </div>
+                        <button type="submit" class="btn-professional">Acceder</button>
+                    </form>
+                    <div class="login-help">
+                        <a href="#" class="link-subtle">¿Ha olvidado su contraseña?</a>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form-pro" class="form-section-pro">
+                    <form onsubmit="handleRegister(event)" class="professional-form">
+                        <div class="input-group">
+                            <label>Tipo de Cliente</label>
+                            <select id="register-tipo" onchange="toggleRegistroTipo()">
+                                <option value="particular">Particular</option>
+                                <option value="empresa">Empresa</option>
+                            </select>
+                        </div>
+
+                        <div id="registro-particular">
+                            <div class="input-group">
+                                <label>Nombre</label>
+                                <input type="text" id="register-nombre" placeholder="Su nombre">
+                            </div>
+                            <div class="input-group">
+                                <label>Apellidos</label>
+                                <input type="text" id="register-apellido" placeholder="Sus apellidos">
+                            </div>
+                        </div>
+
+                        <div id="registro-empresa" style="display: none;">
+                            <div class="input-group">
+                                <label>Razón Social</label>
+                                <input type="text" id="register-empresa" placeholder="Nombre de la empresa">
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Correo Electrónico</label>
+                            <input type="email" id="register-email" required placeholder="correo@empresa.com">
+                        </div>
+                        <div class="input-group">
+                            <label>Teléfono</label>
+                            <input type="tel" id="register-telefono" placeholder="+34 600 000 000">
+                        </div>
+                        <div class="input-group">
+                            <label>Usuario</label>
+                            <input type="text" id="register-username" required placeholder="Elija un nombre de usuario">
+                        </div>
+                        <div class="input-group">
+                            <label>Contraseña</label>
+                            <input type="password" id="register-password" required placeholder="Mínimo 8 caracteres">
+                        </div>
+                        <button type="submit" class="btn-professional">Crear Cuenta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Preview -->
+    <section class="services-preview">
+        <div class="container">
+            <h2 class="section-title">Nuestros Servicios</h2>
+            <div class="services-grid">
+                <div class="service-item">
+                    <div class="service-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <h3>Infraestructura IT</h3>
+                    <p>Diseño e implementación de infraestructuras tecnológicas escalables y seguras</p>
+                </div>
+                <div class="service-item">
+                    <div class="service-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="9"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3>Soporte Técnico</h3>
+                    <p>Asistencia técnica 24/7 con tiempos de respuesta garantizados</p>
+                </div>
+                <div class="service-item">
+                    <div class="service-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3>Ciberseguridad</h3>
+                    <p>Protección avanzada contra amenazas y auditorías de seguridad</p>
+                </div>
+                <div class="service-item">
+                    <div class="service-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Desarrollo a Medida</h3>
+                    <p>Soluciones de software personalizadas para su negocio</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h4>VERIFICANET</h4>
+                    <p>Soluciones IT Empresariales</p>
+                    <p class="footer-small">© 2024 Verificanet. Todos los derechos reservados.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Servicios</h4>
+                    <ul>
+                        <li><a href="#">Infraestructura IT</a></li>
+                        <li><a href="#">Soporte Técnico</a></li>
+                        <li><a href="#">Ciberseguridad</a></li>
+                        <li><a href="#">Desarrollo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Empresa</h4>
+                    <ul>
+                        <li><a href="#">Sobre Nosotros</a></li>
+                        <li><a href="#">Casos de Éxito</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contacto</h4>
+                    <p>Email: info@verificanet.es</p>
+                    <p>Tel: +34 900 000 000</p>
+                    <p>Sevilla, España</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app-pro.js"></script>
+</body>
+</html>
