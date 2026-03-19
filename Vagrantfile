@@ -57,6 +57,7 @@ Vagrant.configure("2") do |config|
     end
 
     web.vm.provision "shell", path: "provision/web-frontend.sh"
+    web.vm.provision "shell", path: "provision/Rutas_dmz.sh"
   end
 
   # ============================================================
@@ -82,6 +83,7 @@ Vagrant.configure("2") do |config|
     end
 
     backend1.vm.provision "shell", path: "provision/backend.sh"
+    backend1.vm.provision "shell", path: "provision/Rutas_dmz.sh"
   end
 
   # ============================================================
@@ -107,6 +109,7 @@ Vagrant.configure("2") do |config|
     end
 
     backend2.vm.provision "shell", path: "provision/backend.sh"
+    backend2.vm.provision "shell", path: "provision/Rutas_dmz.sh"
   end
 
   # ============================================================
@@ -127,5 +130,6 @@ Vagrant.configure("2") do |config|
     end
 
     db.vm.provision "shell", path: "provision/database.sh"
+    db.vm.provision "shell", path: "provision/Rutas_interna.sh"
   end
 end
