@@ -33,6 +33,8 @@ Acceso web: http://localhost:8080
 
 ##  Autor
 
-Manuel Ramírez Rodríguez - ASIR
+Manuel Ramírez Rodríguez
+
 Curso -> CFGS Administración de Sistemas en Red
+
 Año -> 2025/2026
