@@ -11,7 +11,7 @@ import subprocess
 # -------------------------------------------------------
 # Configuración del servidor
 # -------------------------------------------------------
-SERVIDOR = "192.168.50.30"
+SERVIDOR = "192.168.50.41"
 USUARIO  = "vagrant"
 
 
@@ -19,17 +19,22 @@ USUARIO  = "vagrant"
 # Función para ejecutar comandos en el servidor por SSH
 # -------------------------------------------------------
 def ejecutar_ssh(comando):
-    comando_completo = f'ssh -o StrictHostKeyChecking=no {USUARIO}@{SERVIDOR} "{comando}"'
+    ssh_path = r"C:\Windows\System32\OpenSSH\ssh.exe"
+    clave_vagrant = r"C:\Users\clopez\.ssh\id_rsa"
+
+    comando_completo = f'"{ssh_path}" -i "{clave_vagrant}" -o StrictHostKeyChecking=no {USUARIO}@{SERVIDOR} "{comando}"'
+
     resultado = subprocess.run(
         comando_completo,
         shell=True,
         capture_output=True,
-        encoding="utf-8",
+        text=True,
+        encoding="utf-8",       
         errors="replace"
     )
+
     salida = resultado.stdout + resultado.stderr
-    return salida if salida.strip() else "El comando no devolvió ninguna salida."
-# -------------------------------------------------------
+    return salida if salida.strip() else "Sin salida"
 # Función que muestra texto en el cuadro de resultados
 # -------------------------------------------------------
 def mostrar_en_pantalla(titulo, texto):
@@ -37,8 +42,7 @@ def mostrar_en_pantalla(titulo, texto):
     cuadro_texto.insert(tk.END, "-" * 70 + "\n")
     cuadro_texto.insert(tk.END, titulo + "\n")
     cuadro_texto.insert(tk.END, "-" * 70 + "\n\n")
-    cuadro_texto.insert(tk.END, texto)
-
+    cuadro_texto.insert(tk.END, str(texto))
 
 # -------------------------------------------------------
 # Botón: Ver log de errores de Nginx
@@ -54,7 +58,7 @@ def ver_errores():
 # -------------------------------------------------------
 def ver_accesos():
     mostrar_en_pantalla("Cargando...", "Conectando con el servidor...")
-    salida = ejecutar_ssh("sudo tail -n 50 /var/log/nginx/access.log")
+    salida = ejecutar_ssh("sudo tail -n 50 /var/log/nginx/verificanet_access.log 2>&1")
     mostrar_en_pantalla("ACCESOS WEB - Últimas 50 líneas", salida)
 
 

@@ -217,7 +217,7 @@ def menu_tecnico(nombre):
                 datos[pos][7] = nota
 
                 guardar(datos)
-                print("✓ Incidencia actualizada")
+                print(" Incidencia actualizada")
 
         elif op == '4':
             break
@@ -311,11 +311,11 @@ def menu_jefe(nombre):
                 datos[pos][7] = nota
 
                 guardar(datos)
-                print("✓ Actualizada")
+                print(" Actualizada")
 
         elif op == '4':
             print("\n--- ELIMINAR ---")
-            print("⚠ CUIDADO: No se puede deshacer")
+            print(" CUIDADO: No se puede deshacer")
             
             try:
                 id_borrar = int(input("ID: "))
@@ -336,7 +336,7 @@ def menu_jefe(nombre):
             guardar(nueva)
 
             if encontrada:
-                print("✓ Eliminada")
+                print(" Eliminada")
             else:
                 print("No encontrada")
 
@@ -410,8 +410,8 @@ if usuario in USUARIOS:
         elif rol == 'jefe':
             menu_jefe(usuario)
     else:
-        print("\n✗ Contraseña incorrecta")
+        print("\n Contraseña incorrecta")
 else:
-    print("\n✗ Usuario no encontrado")
+    print("\n Usuario no encontrado")
 
 print("\n¡Hasta luego!")

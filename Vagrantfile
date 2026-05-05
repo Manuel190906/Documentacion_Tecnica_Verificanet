@@ -2,133 +2,97 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  # Box por defecto para Linux
   config.vm.box = "ubuntu/jammy64"
+  config.vm.boot_timeout = 600
+  config.ssh.connect_timeout = 30
+  config.ssh.insert_key = false
 
   # ============================================================
-  # FIREWALL / ROUTER (NAT + DMZ + RED INTERNA)
+  # 1. ROUTER
+  # ============================================================
+  config.vm.define "router" do |router|
+    router.vm.hostname = "router"
+    router.vm.network "private_network", ip: "192.168.50.2", virtualbox__intnet: "dmz"
+    router.vm.network "private_network", ip: "192.168.60.2", virtualbox__intnet: "interna"
+
+    router.vm.provider "virtualbox" do |vb|
+      vb.name = "verificanet-router"
+      vb.memory = 512
+      vb.customize ["modifyvm", :id, "--nictype2", "82540EM"]
+      vb.customize ["modifyvm", :id, "--nictype3", "82540EM"]
+    end
+    router.vm.provision "shell", path: "provision/router.sh"
+  end
+
+  # ============================================================
+  # 2. FIREWALL
   # ============================================================
   config.vm.define "firewall" do |firewall|
     firewall.vm.hostname = "firewall"
-
-    # Adaptador 1: NAT (lo añade Vagrant por defecto) → enp0s3 (10.0.2.x)
-    # Salida a Internet + SSH de Vagrant
-
-    # Adaptador 2: DMZ 192.168.50.1
-    firewall.vm.network "private_network",
-      ip: "192.168.50.1",
-      virtualbox__intnet: "dmz"
-
-    # Adaptador 3: RED INTERNA 192.168.60.1
-    firewall.vm.network "private_network",
-      ip: "192.168.60.1",
-      virtualbox__intnet: "interna"
+    firewall.vm.network "private_network", ip: "192.168.50.20", virtualbox__intnet: "dmz"
+    firewall.vm.network "private_network", ip: "192.168.60.20", virtualbox__intnet: "interna"
 
     firewall.vm.provider "virtualbox" do |vb|
-      vb.name   = "verificanet-firewall"
+      vb.name = "verificanet-firewall"
       vb.memory = 512
-      vb.cpus   = 1
+      vb.customize ["modifyvm", :id, "--nictype2", "82540EM"]
+      vb.customize ["modifyvm", :id, "--nictype3", "82540EM"]
     end
-
     firewall.vm.provision "shell", path: "provision/firewall.sh"
   end
 
   # ============================================================
-  # BALANCEADOR WEB (NGINX) EN DMZ
+  # 3. WEB (BALANCEADOR NGINX)
   # ============================================================
   config.vm.define "web" do |web|
     web.vm.hostname = "web"
-
-    # Solo en DMZ
-    web.vm.network "private_network",
-      ip: "192.168.50.30",
-      virtualbox__intnet: "dmz"
-
-    # Acceso HTTP desde el host
-    web.vm.network "forwarded_port",
-      guest: 80,
-      host: 8080,
-      auto_correct: true
+    web.vm.network "private_network", ip: "192.168.50.30", virtualbox__intnet: "dmz"
+    web.vm.network "forwarded_port", guest: 80, host: 8080, auto_correct: true
 
     web.vm.provider "virtualbox" do |vb|
-      vb.name   = "verificanet-web"
+      vb.name = "verificanet-web"
       vb.memory = 512
-      vb.cpus   = 1
+      vb.customize ["modifyvm", :id, "--nictype2", "82540EM"]
     end
-
     web.vm.provision "shell", path: "provision/web-frontend.sh"
     web.vm.provision "shell", path: "provision/Rutas_dmz.sh"
   end
 
   # ============================================================
-  # BACKEND 1 (DMZ + RED INTERNA)
+  # 4. BACKENDS
   # ============================================================
-  config.vm.define "backend1" do |backend1|
-    backend1.vm.hostname = "backend1"
+  [
+    {"name" => "backend1", "ip" => "192.168.50.41"},
+    {"name" => "backend2", "ip" => "192.168.50.42"}
+  ].each do |info|
+    config.vm.define info["name"] do |be|
+      be.vm.hostname = info["name"]
+      be.vm.network "private_network", ip: info["ip"], virtualbox__intnet: "dmz"
 
-    # DMZ
-    backend1.vm.network "private_network",
-      ip: "192.168.50.41",
-      virtualbox__intnet: "dmz"
+      be.vm.provider "virtualbox" do |vb|
+        vb.name = "verificanet-#{info["name"]}"
+        vb.memory = 512
+        vb.customize ["modifyvm", :id, "--nictype2", "82540EM"]
+      end
 
-    # RED INTERNA
-    backend1.vm.network "private_network",
-      ip: "192.168.60.41",
-      virtualbox__intnet: "interna"
-
-    backend1.vm.provider "virtualbox" do |vb|
-      vb.name   = "verificanet-backend1"
-      vb.memory = 512
-      vb.cpus   = 1
+      be.vm.synced_folder "./html-backup", "/vagrant/html-backup"
+      be.vm.provision "shell", path: "provision/backend.sh"
+      be.vm.provision "shell", path: "provision/Rutas_dmz.sh"
     end
-
-    backend1.vm.provision "shell", path: "provision/backend.sh"
-    backend1.vm.provision "shell", path: "provision/Rutas_dmz.sh"
   end
 
   # ============================================================
-  # BACKEND 2 (DMZ + RED INTERNA)
-  # ============================================================
-  config.vm.define "backend2" do |backend2|
-    backend2.vm.hostname = "backend2"
-
-    # DMZ
-    backend2.vm.network "private_network",
-      ip: "192.168.50.42",
-      virtualbox__intnet: "dmz"
-
-    # RED INTERNA
-    backend2.vm.network "private_network",
-      ip: "192.168.60.42",
-      virtualbox__intnet: "interna"
-
-    backend2.vm.provider "virtualbox" do |vb|
-      vb.name   = "verificanet-backend2"
-      vb.memory = 512
-      vb.cpus   = 1
-    end
-
-    backend2.vm.provision "shell", path: "provision/backend.sh"
-    backend2.vm.provision "shell", path: "provision/Rutas_dmz.sh"
-  end
-
-  # ============================================================
-  # BASE DE DATOS (SOLO RED INTERNA)
+  # 5. BASE DE DATOS
   # ============================================================
   config.vm.define "database" do |db|
     db.vm.hostname = "database"
-
-    # Solo en RED INTERNA
-    db.vm.network "private_network",
-      ip: "192.168.60.50",
-      virtualbox__intnet: "interna"
+    db.vm.network "private_network", ip: "192.168.60.50", virtualbox__intnet: "interna"
 
     db.vm.provider "virtualbox" do |vb|
-      vb.name   = "verificanet-database"
+      vb.name = "verificanet-database"
       vb.memory = 1024
-      vb.cpus   = 1
+      vb.customize ["modifyvm", :id, "--nictype2", "82540EM"]
     end
-
     db.vm.provision "shell", path: "provision/database.sh"
     db.vm.provision "shell", path: "provision/Rutas_interna.sh"
   end

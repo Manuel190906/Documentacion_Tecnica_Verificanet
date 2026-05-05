@@ -1,30 +1,19 @@
 #!/bin/bash
-# CONFIGURAR RUTAS - DMZ
-# Este script hace que la VM use el firewall como gateway en lugar del NAT
+echo ">>> Configurando rutas en DMZ..."
 
-echo "=========================================="
-echo "CONFIGURANDO RUTAS A TRAVÉS DEL FIREWALL"
-echo "=========================================="
+ip route del 192.168.60.0/24 2>/dev/null
 
-# Borrar la ruta por defecto del NAT de Vagrant
-ip route del default via 10.0.2.2 2>/dev/null
+# Gateway es el FIREWALL (192.168.50.20)
+ip route add 192.168.60.0/24 via 192.168.50.20
 
-# Añadir ruta por defecto al Firewall (DMZ)
-ip route add default via 192.168.50.1
-
-# Hacer permanente
 cat > /etc/netplan/99-custom-routes.yaml <<EOF
 network:
   version: 2
   ethernets:
     enp0s8:
       routes:
-        - to: 0.0.0.0/0
-          via: 192.168.50.1
-          metric: 100
+        - to: 192.168.60.0/24
+          via: 192.168.50.20
 EOF
-
 netplan apply
-
-echo " Ruta configurada: Todo el tráfico va por el Firewall"
-ip route show
+echo ">>> Ruta hacia red interna configurada via 192.168.50.20"
